@@ -47,4 +47,9 @@
     <Folder Include="Models\" />
     <Folder Include="Models\Requests\" />
   </ItemGroup>
+  <ItemGroup>
+    <None Update="CLICommands.txt">
+      <DependentUpon>CLICommands.tt</DependentUpon>
+    </None>
+  </ItemGroup>
 </Project>

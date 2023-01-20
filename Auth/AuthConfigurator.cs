@@ -3,9 +3,11 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.Security.Claims;
+using Microsoft.EntityFrameworkCore.SqlServer;
 using Microsoft.AspNetCore.Identity;
 using TodoApp.Api.Db;
 using TodoApp.Api.Db.Entity;
+using Microsoft.EntityFrameworkCore;
 
 namespace TodoApp.Api.Auth
 {
@@ -27,6 +29,11 @@ namespace TodoApp.Api.Auth
 
             builder.Services.AddTransient<TokenGenerator>();
 
+            builder.Services.AddDbContext<AppDbContext>(options =>
+            {
+                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+            });
+
             var tokenValidationParameters = new TokenValidationParameters
             {
                 ValidateIssuer = true,
@@ -46,15 +53,14 @@ namespace TodoApp.Api.Auth
                     options.TokenValidationParameters = tokenValidationParameters;
                 });
 
-            //აუცილებელი არა
-            //builder.Services.AddAuthorization(options =>
-            //{
-            //    options.AddPolicy("ApiUser",
-            //        policy => policy.RequireClaim(ClaimTypes.Role, "api-user"));
+            builder.Services.AddAuthorization(options =>
+            {
+                options.AddPolicy("ApiUser",
+                    policy => policy.RequireClaim(ClaimTypes.Role, "api-user"));
 
-            //    options.AddPolicy("ApiAdmin",
-            //        policy => policy.RequireClaim(ClaimTypes.Role, "api-admin"));
-            //});
+                options.AddPolicy("ApiAdmin",
+                    policy => policy.RequireClaim(ClaimTypes.Role, "api-admin"));
+            });
 
             builder.Services
             .AddIdentity<UserEntity, RoleEntity>(o =>

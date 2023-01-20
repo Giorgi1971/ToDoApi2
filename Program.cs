@@ -2,8 +2,7 @@
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddTransient<IAuthService, AuthService>();
-AuthConfigurator.Configure(builder);
+
 
 
 // Add services to the container.
@@ -13,8 +12,8 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-//AuthConfigurator.Configure(builder);
-
+builder.Services.AddTransient<IAuthService, AuthService>();
+AuthConfigurator.Configure(builder);
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -25,6 +24,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 

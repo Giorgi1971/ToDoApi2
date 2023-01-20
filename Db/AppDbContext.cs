@@ -3,6 +3,10 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using TodoApp.Api.Db.Entity;
 
+
+// dotnet ef migrations add Initial -- "Server=localhost; Database = NNToApiDoDb; User Id=sa; Password=HardT0Gue$$Pa$$word; Trusted_Connection=True; Encrypt=False;"
+// dotnet ef database update -- "Server=localhost; Database = NNToApiDoDb; User Id=sa; Password=HardT0Gue$$Pa$$word; Trusted_Connection=True;integrated security=False; Encrypt=False;"
+
 namespace TodoApp.Api.Db
 {
     public class AppDbContext : IdentityDbContext<UserEntity, RoleEntity, int>
