@@ -71,6 +71,7 @@ namespace TodoApp.Api.Controllers
         {
             // Create
             var entity = new UserEntity();
+            entity.UserName = request.Email;
             entity.Email = request.Email;
             var result = await _userManager.CreateAsync(entity, request.Password);
 
@@ -88,7 +89,7 @@ namespace TodoApp.Api.Controllers
 
         // TODO: - I RegisterPasswordReset
         [HttpPost("request-password-reset")]
-        public async Task<IActionResult> RequestPasswordReset(RequestPasswordResetRequest request)
+        public async Task<IActionResult> RequestPasswordReset([FromBody]RequestPasswordResetRequest request)
         {
             var user = await _userManager.FindByEmailAsync(request.Email);
             if (user == null)
