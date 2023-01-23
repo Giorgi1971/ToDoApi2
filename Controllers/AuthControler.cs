@@ -4,6 +4,7 @@ using TodoApp.Api.Auth;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
+using TodoApp.Api.Db;
 using TodoApp.Api.Db.Entity;
 using TodoApp.Api.Models.Requests;
 
@@ -15,13 +16,20 @@ namespace TodoApp.Api.Controllers
 
     public class AuthController : ControllerBase
     {
-        private TokenGenerator _tokenGenerator;
-        private UserManager<UserEntity> _userManager;
+        private readonly AppDbContext _db;
+        private readonly TokenGenerator _tokenGenerator;
+        private readonly UserManager<UserEntity> _userManager;
+        private readonly IConfiguration _configuration;
+
 
         public AuthController(
+            IConfiguration configuration,
+            AppDbContext db,
             UserManager<UserEntity> userManager,
             TokenGenerator tokenGenerator)
         {
+            _configuration = configuration;
+            _db = db;
             _tokenGenerator = tokenGenerator;
             _userManager = userManager;
         }
@@ -85,22 +93,43 @@ namespace TodoApp.Api.Controllers
             var user = await _userManager.FindByEmailAsync(request.Email);
             if (user == null)
                 return NotFound("Use Notr Found");
-        // 1 Generate password reset Token
+            // 1 Generate password reset Token
             var token = _userManager.GeneratePasswordResetTokenAsync(user);
-        // 2 Insert email into SendEmailRequest table
-
-        // 3 Return result
-
-
+            // 2 Insert email into SendEmailRequest table
+            var sendEmailRequestEntity = new SendEmailRequestEntity();
+            sendEmailRequestEntity.ToAddress = request.Email;
+            sendEmailRequestEntity.Status = SendEmailRequestStatus.New;
+            sendEmailRequestEntity.CreateAt = DateTime.Now;
+            var url = _configuration["PasswordResetUrl"]
+                .Replace("{UserId}", user.Id.ToString())
+                .Replace("{token}", token.ToString());
+            var resetUrl = $"< a href =\"{url}\">Reset Password</a>";
+            sendEmailRequestEntity.Body = $"Plaese, Reset Your Password: {resetUrl}";
+            _db.SendEmailRequests.Add(sendEmailRequestEntity);
+            await _db.SaveChangesAsync();
+            // 3 Return result
             return Ok();
         }
 
-
         // TODO: - II ResetPassword
-        // 1 validate Token
-        // 2 validate new Password
-        // 3 Reset Password
-        // 4 Return result
+        [HttpPost("reset-Password")]
+        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordRequest request)
+        {
+            var user = await _userManager.FindByIdAsync(request.UserId.ToString());
+            if (user == null)
+                return NotFound("user Not Found.");
+            var resetResult = await _userManager.ResetPasswordAsync(user, request.Token, request.Password);
+            if (!resetResult.Succeeded)
+            {
+                var firstError = resetResult.Errors.First();
+                return StatusCode(500, firstError.Description);
+            }
+            // 1 validate Token
 
+            // 2 validate new Password
+            // 3 Reset Password
+            // 4 Return result
+            return Ok();
+        }
     }
 }
