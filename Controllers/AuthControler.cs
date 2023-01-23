@@ -35,16 +35,11 @@ namespace TodoApp.Api.Controllers
         }
 
         [HttpGet("CreateUser")]
-
         public string CreateUser()
         {
             return "User Creating....";
         }
 
-        // TODO:register
-
-        // TODO:1. RegisterPasswordReset
-        // TODO:2. ResetPassword
 
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginRequest request)
@@ -62,6 +57,7 @@ namespace TodoApp.Api.Controllers
             return Ok(_tokenGenerator.Generate(request.Email));
         }
 
+        // TODO:register
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterUserRequest request)
         {
@@ -81,5 +77,30 @@ namespace TodoApp.Api.Controllers
 
             return Ok();
         }
+
+        // TODO: - I RegisterPasswordReset
+        [HttpPost("request-password-reset")]
+        public async Task<IActionResult> RequestPasswordReset(RequestPasswordResetRequest request)
+        {
+            var user = await _userManager.FindByEmailAsync(request.Email);
+            if (user == null)
+                return NotFound("Use Notr Found");
+        // 1 Generate password reset Token
+            var token = _userManager.GeneratePasswordResetTokenAsync(user);
+        // 2 Insert email into SendEmailRequest table
+
+        // 3 Return result
+
+
+            return Ok();
+        }
+
+
+        // TODO: - II ResetPassword
+        // 1 validate Token
+        // 2 validate new Password
+        // 3 Reset Password
+        // 4 Return result
+
     }
 }

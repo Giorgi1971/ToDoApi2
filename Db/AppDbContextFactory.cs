@@ -14,5 +14,5 @@ public class AppDbContextFactory : IDesignTimeDbContextFactory<AppDbContext>
         return new AppDbContext(optionsBuilder.Options);
     }
 }
-// dotnet ef migrations add Initial -- "Server=localhost; Database = NNToApiDoDb; User Id=sa; Password=HardT0Gue$$Pa$$word; Trusted_Connection=True; Encrypt=False;"
-// dotnet ef database update -- "Server=localhost; Database = NNToApiDoDb; User Id=sa; Password=HardT0Gue$$Pa$$word; Trusted_Connection=True;integrated security=False; Encrypt=False;"
+// dotnet ef migrations add Initial -- "Server=localhost; Database = NNToApiDoDb; User Id=sa; Password=HardT0Gue\$\$Pa\$\$word; Trusted_Connection=True; Encrypt=False;"
+// dotnet ef database update -- "Server=localhost; Database = NNToApiDoDb; User Id=sa; Password=HardT0Gue\$\$Pa\$\$word; Trusted_Connection=True;integrated security=False; Encrypt=False;"

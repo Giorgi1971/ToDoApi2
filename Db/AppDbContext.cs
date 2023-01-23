@@ -12,9 +12,7 @@ namespace TodoApp.Api.Db
     // DbContext-ის ნაცვლად ამას ვიყენებთ, რადგან ჩაშენებული უსერ გამოვიყენოთ თავისი ბევრი რამით.
     public class AppDbContext : IdentityDbContext<UserEntity, RoleEntity, int>
     {
-        //public AppDbContext()
-        //{
-        //}
+        public DbSet<SendEmailRequestEntity> SendEmailRequests { get; set; }
 
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
