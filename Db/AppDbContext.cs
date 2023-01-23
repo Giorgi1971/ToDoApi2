@@ -9,6 +9,7 @@ using TodoApp.Api.Db.Entity;
 
 namespace TodoApp.Api.Db
 {
+    // DbContext-ის ნაცვლად ამას ვიყენებთ, რადგან ჩაშენებული უსერ გამოვიყენოთ თავისი ბევრი რამით.
     public class AppDbContext : IdentityDbContext<UserEntity, RoleEntity, int>
     {
         //public AppDbContext()

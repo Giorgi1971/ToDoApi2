@@ -1,8 +1,7 @@
 ﻿using TodoApp.Api.Auth;
 
+
 var builder = WebApplication.CreateBuilder(args);
-
-
 
 
 // Add services to the container.

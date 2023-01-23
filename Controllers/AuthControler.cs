@@ -42,8 +42,9 @@ namespace TodoApp.Api.Controllers
         }
 
         // TODO:register
-        // TODO:RegisterPasswordReset
-        // TODO:ResetPassword
+
+        // TODO:1. RegisterPasswordReset
+        // TODO:2. ResetPassword
 
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginRequest request)
@@ -51,20 +52,15 @@ namespace TodoApp.Api.Controllers
             // TODO:Check user credentials...
             var user = await _userManager.FindByEmailAsync(request.Email);
             if (user == null)
-            {
-                // User not found
                 return NotFound("User not found");
-            }
+
             var isCorrectPassword = await _userManager.CheckPasswordAsync(user, request.Password);
 
             if (!isCorrectPassword)
-            {
                 return BadRequest("Invalid email or password");
-            }
 
             return Ok(_tokenGenerator.Generate(request.Email));
         }
-
 
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterUserRequest request)
@@ -81,6 +77,7 @@ namespace TodoApp.Api.Controllers
             }
 
             // var token = await _userManager.GeneratePasswordResetTokenAsync(entity);
+             var token = await _userManager.GenerateEmailConfirmationTokenAsync(entity);
 
             return Ok();
         }

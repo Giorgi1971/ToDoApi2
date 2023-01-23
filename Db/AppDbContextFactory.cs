@@ -10,6 +10,7 @@ public class AppDbContextFactory : IDesignTimeDbContextFactory<AppDbContext>
     {
         var optionsBuilder = new DbContextOptionsBuilder<AppDbContext>();
         optionsBuilder.UseSqlServer(args[0]);
+
         return new AppDbContext(optionsBuilder.Options);
     }
 }
