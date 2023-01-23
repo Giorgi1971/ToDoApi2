@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Identity;
 using TodoApp.Api.Db;
 using TodoApp.Api.Db.Entity;
 using TodoApp.Api.Models.Requests;
-
+using TodoApp.Api.Repositories;
 
 namespace TodoApp.Api.Controllers
 {
@@ -16,20 +16,20 @@ namespace TodoApp.Api.Controllers
 
     public class AuthController : ControllerBase
     {
-        private readonly AppDbContext _db;
         private readonly TokenGenerator _tokenGenerator;
         private readonly UserManager<UserEntity> _userManager;
         private readonly IConfiguration _configuration;
+        private readonly ISendEmailRequestRepository _sendEmailRequestRepository;
 
 
         public AuthController(
             IConfiguration configuration,
-            AppDbContext db,
+            ISendEmailRequestRepository sendEmailRequestRepository,
             UserManager<UserEntity> userManager,
             TokenGenerator tokenGenerator)
         {
             _configuration = configuration;
-            _db = db;
+            _sendEmailRequestRepository = sendEmailRequestRepository;
             _tokenGenerator = tokenGenerator;
             _userManager = userManager;
         }
@@ -101,13 +101,14 @@ namespace TodoApp.Api.Controllers
             sendEmailRequestEntity.ToAddress = request.Email;
             sendEmailRequestEntity.Status = SendEmailRequestStatus.New;
             sendEmailRequestEntity.CreateAt = DateTime.Now;
-            var url = _configuration["PasswordResetUrl"]
+            var url = _configuration["PasswordResetUrl"]!
                 .Replace("{UserId}", user.Id.ToString())
                 .Replace("{token}", token.ToString());
-            var resetUrl = $"< a href =\"{url}\">Reset Password</a>";
+            var resetUrl = $"<a href =\"{url}\">Reset Password</a>";
             sendEmailRequestEntity.Body = $"Plaese, Reset Your Password: {resetUrl}";
-            _db.SendEmailRequests.Add(sendEmailRequestEntity);
-            await _db.SaveChangesAsync();
+
+            _sendEmailRequestRepository.Insert(sendEmailRequestEntity);
+            await _sendEmailRequestRepository.SaveChangesAsync();
             // 3 Return result
             return Ok();
         }

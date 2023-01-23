@@ -39,6 +39,7 @@
     <None Remove="Microsoft.EntityFrameworkCore.Tools" />
     <None Remove="Models\" />
     <None Remove="Models\Requests\" />
+    <None Remove="Repositories\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Auth\" />
@@ -46,6 +47,7 @@
     <Folder Include="Db\Entity\" />
     <Folder Include="Models\" />
     <Folder Include="Models\Requests\" />
+    <Folder Include="Repositories\" />
   </ItemGroup>
   <ItemGroup>
     <None Update="CLICommands.txt">

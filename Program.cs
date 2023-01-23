@@ -1,6 +1,7 @@
 ﻿using TodoApp.Api.Auth;
 using TodoApp.Api.Db;
 using Microsoft.EntityFrameworkCore;
+using TodoApp.Api.Repositories;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,6 +14,8 @@ AuthConfigurator.Configure(builder);
 builder.Services.AddDbContext<AppDbContext>(
     c => c.UseSqlServer(builder.Configuration["AppDbContextConnection"]
     ));
+
+builder.Services.AddTransient<ISendEmailRequestRepository, SendEmailRequestRepository>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
