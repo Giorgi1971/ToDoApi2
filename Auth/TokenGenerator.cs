@@ -33,7 +33,7 @@ namespace TodoApp.Api.Auth
                 issuer: _settings.Issuer,
                 audience: _settings.Audience,
                 claims: claims,
-                expires: DateTime.Now.AddMinutes(1),
+                expires: DateTime.Now.AddMinutes(100),
                 signingCredentials: credentials);
 
             var tokenGenerator = new JwtSecurityTokenHandler();

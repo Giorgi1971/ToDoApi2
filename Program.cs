@@ -16,6 +16,7 @@ builder.Services.AddDbContext<AppDbContext>(
     ));
 
 builder.Services.AddTransient<ISendEmailRequestRepository, SendEmailRequestRepository>();
+builder.Services.AddTransient<ITodoRepository, TodoRepository>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

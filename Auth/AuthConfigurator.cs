@@ -15,7 +15,6 @@ namespace TodoApp.Api.Auth
     {
         public static void Configure(WebApplicationBuilder builder)
         {
-
             var issuer = builder.Configuration["Jwt:Issuer"]!;
             var audience = builder.Configuration["Jwt:Audience"]!;
             var key = builder.Configuration["Jwt:Key"]!;
