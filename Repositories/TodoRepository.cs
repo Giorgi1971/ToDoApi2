@@ -37,16 +37,19 @@ namespace TodoApp.Api.Repositories
 
         public async Task<ToDoEntity> GetToDo(int todoId)
         {
-            return await _db.Todos.FirstOrDefaultAsync(e => e.Id == todoId);
+            var result = await _db.Todos.FirstOrDefaultAsync(e => e.Id == todoId);
+            if (result is null)
+                return null;
+            return result;
         }
 
 
         public async Task<ToDoEntity> UpdateTodo(
-            int userId, string title, string description, DateTime deadline
+            int id, string title, string description, DateTime deadline
             )
         {
             var result = await _db.Todos
-                .FirstOrDefaultAsync(e => e.Id == userId);
+                .FirstOrDefaultAsync(e => e.Id == id);
 
             if (result != null)
             {
@@ -88,6 +91,7 @@ namespace TodoApp.Api.Repositories
             entity.Title = title;
 
             await _db.Todos.AddAsync(entity);
+            // saveChanges აქ რატომ არ ვაკეთებთ???
         }
 
         public async Task SaveChangesAsync()
@@ -96,4 +100,3 @@ namespace TodoApp.Api.Repositories
         }
     }
 }
-

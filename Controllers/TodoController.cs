@@ -32,21 +32,40 @@ namespace TodoApp.Api.Controllers
         }
 
 
-        //// GET: api/values
-        //[HttpGet]
-        //public Task<IActionResult> GetGreeting()
-        //{
-        //    //_todoRepository.
-        //    return Ok(value: ToDoEntity);
-        //}
+        [HttpGet]
+        public async Task<ActionResult> GetTodos()
+        {
+            try
+            {
+                return Ok(await _todoRepository.GetTodos());
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    "Error retrieving data from the database");
+            }
+        }
 
 
         // GET api/values/5
-        [HttpGet("{id}")]
-        public string Get(int id)
+        [HttpGet("{id:int}")]
+        public async Task<ActionResult<ToDoEntity>> GetToDo(int id)
         {
-            return "value";
+            try
+            {
+                var result = await _todoRepository.GetToDo(id);
+
+                if (result == null) return NotFound();
+
+                return result;
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    "Error retrieving data from the database");
+            }
         }
+
 
         // POST api/values
         //[Authorize]
@@ -67,18 +86,56 @@ namespace TodoApp.Api.Controllers
         }
 
 
-
-
         // PUT api/values/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody]string value)
+        [HttpPut("{id:int}")]
+        public async Task<ActionResult<ToDoEntity>> UpdateEmployee([FromBody] UpdateTodoRequest request)
         {
+            try
+            {
+                var user = await _userManager.GetUserAsync(User);
+                if (user == null)
+                    return NotFound("User not Found");
+
+                var userId = user.Id;
+
+                var todoToUpdate = await _todoRepository.GetToDo(request.Id);
+                if (todoToUpdate == null)
+                    return NotFound($"Employee with Id = {request.Id} not found");
+
+                // ეს გვჭირდება ???
+                if (userId != todoToUpdate.UserId)
+                    return BadRequest("Employee ID mismatch");
+
+                return await _todoRepository.UpdateTodo(request.Id, request.Title, request.Decsription, request.Deadline);
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    "Error updating data");
+            }
         }
 
         // DELETE api/values/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
+        [HttpDelete("{id:int}")]
+        public async Task<ActionResult<ToDoEntity>> DeleteToDoEntity(int id)
         {
+            try
+            {
+                var todoToDelete = await _todoRepository.GetToDo(id);
+
+                if (todoToDelete == null)
+                {
+                    return NotFound($"Employee with Id = {id} not found");
+                }
+                return Ok();
+                // წაშლა არ ხდება :(((((((((((( ან ვერ:
+                //return await _todoRepository.DeleteTodo(id);
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    "Error deleting data");
+            }
         }
     }
 }
