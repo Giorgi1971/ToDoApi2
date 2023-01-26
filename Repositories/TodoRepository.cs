@@ -1,6 +1,11 @@
 ﻿using System;
+using Microsoft.AspNetCore.Mvc;
 using TodoApp.Api.Db;
 using TodoApp.Api.Db.Entity;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+
 
 namespace TodoApp.Api.Repositories
 {
@@ -8,6 +13,10 @@ namespace TodoApp.Api.Repositories
     {
         Task InsertAsync(int userId, string title, string description, DateTime deadline);
         Task SaveChangesAsync();
+        Task<IEnumerable<ToDoEntity>> GetTodos();
+        Task<ToDoEntity> GetToDo(int todoId);
+        Task<ToDoEntity> UpdateTodo(int userId, string title, string description, DateTime deadline);
+        void DeleteTodo(int todoId);
     }
 
     public class TodoRepository : ITodoRepository
@@ -18,6 +27,52 @@ namespace TodoApp.Api.Repositories
         {
             _db = db;
         }
+
+
+        public async Task<IEnumerable<ToDoEntity>> GetTodos()
+        {
+            return await _db.Todos.ToListAsync();
+        }
+
+
+        public async Task<ToDoEntity> GetToDo(int todoId)
+        {
+            return await _db.Todos.FirstOrDefaultAsync(e => e.Id == todoId);
+        }
+
+
+        public async Task<ToDoEntity> UpdateTodo(
+            int userId, string title, string description, DateTime deadline
+            )
+        {
+            var result = await _db.Todos
+                .FirstOrDefaultAsync(e => e.Id == userId);
+
+            if (result != null)
+            {
+                result.DeadLine = deadline;
+                result.Title = title;
+                result.Description = description;
+
+                await _db.SaveChangesAsync();
+
+                return result;
+            }
+
+            return null;
+        }
+
+        public async void DeleteTodo(int todoId)
+        {
+            var result = await _db.Todos
+                .FirstOrDefaultAsync(e => e.Id == todoId);
+            if (result != null)
+            {
+                _db.Todos.Remove(result);
+                await _db.SaveChangesAsync();
+            }
+        }
+
         public async Task InsertAsync
             (
                 int userId, string title, string description, DateTime deadline

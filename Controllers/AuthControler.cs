@@ -34,7 +34,6 @@ namespace TodoApp.Api.Controllers
             _userManager = userManager;
         }
 
-
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginRequest request)
         {

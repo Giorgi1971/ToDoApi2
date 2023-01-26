@@ -32,12 +32,14 @@ namespace TodoApp.Api.Controllers
         }
 
 
-        // GET: api/values
-        [HttpGet]
-        public IEnumerable<string> Get()
-        {
-            return new string[] { "value1", "value2" };
-        }
+        //// GET: api/values
+        //[HttpGet]
+        //public Task<IActionResult> GetGreeting()
+        //{
+        //    //_todoRepository.
+        //    return Ok(value: ToDoEntity);
+        //}
+
 
         // GET api/values/5
         [HttpGet("{id}")]
@@ -47,7 +49,7 @@ namespace TodoApp.Api.Controllers
         }
 
         // POST api/values
-        [Authorize]
+        //[Authorize]
         //[Authorize("ApiUser", AuthenticationSchemes = "Bearer")]
         [HttpPost("create")]
         public async Task<ActionResult> CreateToDo([FromBody] CreateTodoRequest request)
