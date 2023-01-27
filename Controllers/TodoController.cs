@@ -127,9 +127,9 @@ namespace TodoApp.Api.Controllers
                 {
                     return NotFound($"Employee with Id = {id} not found");
                 }
+
+                _todoRepository.DeleteTodo(id);
                 return Ok();
-                // წაშლა არ ხდება :(((((((((((( ან ვერ:
-                //return await _todoRepository.DeleteTodo(id);
             }
             catch (Exception)
             {
